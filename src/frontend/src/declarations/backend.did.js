@@ -8,10 +8,280 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const idlService = IDL.Service({});
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
+export const OrderStatus = IDL.Variant({
+  'shipped' : IDL.Null,
+  'cancelled' : IDL.Null,
+  'pending' : IDL.Null,
+  'outForDelivery' : IDL.Null,
+  'awaitingPickup' : IDL.Null,
+  'delivered' : IDL.Null,
+  'processing' : IDL.Null,
+  'returned' : IDL.Null,
+});
+export const PaymentStatus = IDL.Variant({
+  'disputed' : IDL.Null,
+  'pending' : IDL.Null,
+  'partiallyRefunded' : IDL.Null,
+  'paid' : IDL.Null,
+  'refunded' : IDL.Null,
+  'authorized' : IDL.Null,
+  'chargeback' : IDL.Null,
+  'failed' : IDL.Null,
+});
+export const AddressType = IDL.Variant({
+  'shipping' : IDL.Null,
+  'billing' : IDL.Null,
+  'pickup' : IDL.Null,
+});
+export const Address = IDL.Record({
+  'zip' : IDL.Text,
+  'street' : IDL.Text,
+  'city' : IDL.Text,
+  'addressType' : IDL.Opt(AddressType),
+});
+export const ContactInfo = IDL.Record({
+  'customerName' : IDL.Text,
+  'billingAddress' : Address,
+  'email' : IDL.Text,
+  'shippingAddress' : Address,
+});
+export const Time = IDL.Int;
+export const BagelNutritionalInfo = IDL.Record({
+  'fiber' : IDL.Nat,
+  'carbs' : IDL.Nat,
+  'calories' : IDL.Nat,
+  'protein' : IDL.Nat,
+});
+export const BagelDietaryInfo = IDL.Variant({
+  'vegan' : IDL.Null,
+  'glutenFree' : IDL.Null,
+  'dairyFree' : IDL.Null,
+  'containsNuts' : IDL.Null,
+  'vegetarian' : IDL.Null,
+});
+export const ItemType = IDL.Variant({
+  'premium' : IDL.Null,
+  'classic' : IDL.Null,
+  'stuffed' : IDL.Null,
+  'gourmet' : IDL.Null,
+});
+export const Category = IDL.Variant({
+  'bagel' : IDL.Null,
+  'lunchSpecial' : IDL.Null,
+  'breakfastSpecial' : IDL.Null,
+  'beverage' : IDL.Null,
+  'creamCheese' : IDL.Null,
+});
+export const Item = IDL.Record({
+  'nutritionalInfo' : IDL.Opt(BagelNutritionalInfo),
+  'name' : IDL.Text,
+  'size' : IDL.Opt(IDL.Text),
+  'productId' : IDL.Text,
+  'dietaryInfo' : IDL.Vec(BagelDietaryInfo),
+  'itemType' : IDL.Opt(ItemType),
+  'quantity' : IDL.Nat,
+  'category' : IDL.Opt(Category),
+  'price' : IDL.Nat,
+  'ingredients' : IDL.Vec(IDL.Text),
+});
+export const Order = IDL.Record({
+  'status' : OrderStatus,
+  'paymentStatus' : PaymentStatus,
+  'contactInfo' : ContactInfo,
+  'customerPrincipal' : IDL.Opt(IDL.Principal),
+  'orderDate' : Time,
+  'orderId' : IDL.Nat,
+  'specialInstructions' : IDL.Opt(IDL.Text),
+  'totalAmount' : IDL.Nat,
+  'customerId' : IDL.Text,
+  'items' : IDL.Vec(Item),
+});
+export const UserProfile = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Text,
+  'phone' : IDL.Opt(IDL.Text),
+});
+export const OrderCriteria = IDL.Variant({
+  'paymentStatus' : PaymentStatus,
+  'pendingOrders' : IDL.Null,
+  'city' : IDL.Text,
+  'productId' : IDL.Text,
+  'specificStatus' : OrderStatus,
+  'minimumAmount' : IDL.Nat,
+  'recentOrders' : IDL.Null,
+  'customerId' : IDL.Text,
+  'dateRange' : IDL.Tuple(Time, Time),
+});
+
+export const idlService = IDL.Service({
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'createOrder' : IDL.Func([Order], [Order], []),
+  'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+  'getCallerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getCustomerOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
+  'getFilteredOrders' : IDL.Func(
+      [IDL.Opt(OrderCriteria)],
+      [IDL.Vec(Order)],
+      ['query'],
+    ),
+  'getRazorpayKeyId' : IDL.Func([], [IDL.Text], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'markOrderAsPaid' : IDL.Func([IDL.Nat], [], []),
+  'quickSearchOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+});
 
 export const idlInitArgs = [];
 
-export const idlFactory = ({ IDL }) => { return IDL.Service({}); };
+export const idlFactory = ({ IDL }) => {
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
+  const OrderStatus = IDL.Variant({
+    'shipped' : IDL.Null,
+    'cancelled' : IDL.Null,
+    'pending' : IDL.Null,
+    'outForDelivery' : IDL.Null,
+    'awaitingPickup' : IDL.Null,
+    'delivered' : IDL.Null,
+    'processing' : IDL.Null,
+    'returned' : IDL.Null,
+  });
+  const PaymentStatus = IDL.Variant({
+    'disputed' : IDL.Null,
+    'pending' : IDL.Null,
+    'partiallyRefunded' : IDL.Null,
+    'paid' : IDL.Null,
+    'refunded' : IDL.Null,
+    'authorized' : IDL.Null,
+    'chargeback' : IDL.Null,
+    'failed' : IDL.Null,
+  });
+  const AddressType = IDL.Variant({
+    'shipping' : IDL.Null,
+    'billing' : IDL.Null,
+    'pickup' : IDL.Null,
+  });
+  const Address = IDL.Record({
+    'zip' : IDL.Text,
+    'street' : IDL.Text,
+    'city' : IDL.Text,
+    'addressType' : IDL.Opt(AddressType),
+  });
+  const ContactInfo = IDL.Record({
+    'customerName' : IDL.Text,
+    'billingAddress' : Address,
+    'email' : IDL.Text,
+    'shippingAddress' : Address,
+  });
+  const Time = IDL.Int;
+  const BagelNutritionalInfo = IDL.Record({
+    'fiber' : IDL.Nat,
+    'carbs' : IDL.Nat,
+    'calories' : IDL.Nat,
+    'protein' : IDL.Nat,
+  });
+  const BagelDietaryInfo = IDL.Variant({
+    'vegan' : IDL.Null,
+    'glutenFree' : IDL.Null,
+    'dairyFree' : IDL.Null,
+    'containsNuts' : IDL.Null,
+    'vegetarian' : IDL.Null,
+  });
+  const ItemType = IDL.Variant({
+    'premium' : IDL.Null,
+    'classic' : IDL.Null,
+    'stuffed' : IDL.Null,
+    'gourmet' : IDL.Null,
+  });
+  const Category = IDL.Variant({
+    'bagel' : IDL.Null,
+    'lunchSpecial' : IDL.Null,
+    'breakfastSpecial' : IDL.Null,
+    'beverage' : IDL.Null,
+    'creamCheese' : IDL.Null,
+  });
+  const Item = IDL.Record({
+    'nutritionalInfo' : IDL.Opt(BagelNutritionalInfo),
+    'name' : IDL.Text,
+    'size' : IDL.Opt(IDL.Text),
+    'productId' : IDL.Text,
+    'dietaryInfo' : IDL.Vec(BagelDietaryInfo),
+    'itemType' : IDL.Opt(ItemType),
+    'quantity' : IDL.Nat,
+    'category' : IDL.Opt(Category),
+    'price' : IDL.Nat,
+    'ingredients' : IDL.Vec(IDL.Text),
+  });
+  const Order = IDL.Record({
+    'status' : OrderStatus,
+    'paymentStatus' : PaymentStatus,
+    'contactInfo' : ContactInfo,
+    'customerPrincipal' : IDL.Opt(IDL.Principal),
+    'orderDate' : Time,
+    'orderId' : IDL.Nat,
+    'specialInstructions' : IDL.Opt(IDL.Text),
+    'totalAmount' : IDL.Nat,
+    'customerId' : IDL.Text,
+    'items' : IDL.Vec(Item),
+  });
+  const UserProfile = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'phone' : IDL.Opt(IDL.Text),
+  });
+  const OrderCriteria = IDL.Variant({
+    'paymentStatus' : PaymentStatus,
+    'pendingOrders' : IDL.Null,
+    'city' : IDL.Text,
+    'productId' : IDL.Text,
+    'specificStatus' : OrderStatus,
+    'minimumAmount' : IDL.Nat,
+    'recentOrders' : IDL.Null,
+    'customerId' : IDL.Text,
+    'dateRange' : IDL.Tuple(Time, Time),
+  });
+  
+  return IDL.Service({
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'createOrder' : IDL.Func([Order], [Order], []),
+    'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+    'getCallerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCustomerOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
+    'getFilteredOrders' : IDL.Func(
+        [IDL.Opt(OrderCriteria)],
+        [IDL.Vec(Order)],
+        ['query'],
+      ),
+    'getRazorpayKeyId' : IDL.Func([], [IDL.Text], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'markOrderAsPaid' : IDL.Func([IDL.Nat], [], []),
+    'quickSearchOrders' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  });
+};
 
 export const init = ({ IDL }) => { return []; };

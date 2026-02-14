@@ -10,7 +10,116 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface _SERVICE {}
+export interface Address {
+  'zip' : string,
+  'street' : string,
+  'city' : string,
+  'addressType' : [] | [AddressType],
+}
+export type AddressType = { 'shipping' : null } |
+  { 'billing' : null } |
+  { 'pickup' : null };
+export type BagelDietaryInfo = { 'vegan' : null } |
+  { 'glutenFree' : null } |
+  { 'dairyFree' : null } |
+  { 'containsNuts' : null } |
+  { 'vegetarian' : null };
+export interface BagelNutritionalInfo {
+  'fiber' : bigint,
+  'carbs' : bigint,
+  'calories' : bigint,
+  'protein' : bigint,
+}
+export type Category = { 'bagel' : null } |
+  { 'lunchSpecial' : null } |
+  { 'breakfastSpecial' : null } |
+  { 'beverage' : null } |
+  { 'creamCheese' : null };
+export interface ContactInfo {
+  'customerName' : string,
+  'billingAddress' : Address,
+  'email' : string,
+  'shippingAddress' : Address,
+}
+export interface Item {
+  'nutritionalInfo' : [] | [BagelNutritionalInfo],
+  'name' : string,
+  'size' : [] | [string],
+  'productId' : string,
+  'dietaryInfo' : Array<BagelDietaryInfo>,
+  'itemType' : [] | [ItemType],
+  'quantity' : bigint,
+  'category' : [] | [Category],
+  'price' : bigint,
+  'ingredients' : Array<string>,
+}
+export type ItemType = { 'premium' : null } |
+  { 'classic' : null } |
+  { 'stuffed' : null } |
+  { 'gourmet' : null };
+export interface Order {
+  'status' : OrderStatus,
+  'paymentStatus' : PaymentStatus,
+  'contactInfo' : ContactInfo,
+  'customerPrincipal' : [] | [Principal],
+  'orderDate' : Time,
+  'orderId' : bigint,
+  'specialInstructions' : [] | [string],
+  'totalAmount' : bigint,
+  'customerId' : string,
+  'items' : Array<Item>,
+}
+export type OrderCriteria = { 'paymentStatus' : PaymentStatus } |
+  { 'pendingOrders' : null } |
+  { 'city' : string } |
+  { 'productId' : string } |
+  { 'specificStatus' : OrderStatus } |
+  { 'minimumAmount' : bigint } |
+  { 'recentOrders' : null } |
+  { 'customerId' : string } |
+  { 'dateRange' : [Time, Time] };
+export type OrderStatus = { 'shipped' : null } |
+  { 'cancelled' : null } |
+  { 'pending' : null } |
+  { 'outForDelivery' : null } |
+  { 'awaitingPickup' : null } |
+  { 'delivered' : null } |
+  { 'processing' : null } |
+  { 'returned' : null };
+export type PaymentStatus = { 'disputed' : null } |
+  { 'pending' : null } |
+  { 'partiallyRefunded' : null } |
+  { 'paid' : null } |
+  { 'refunded' : null } |
+  { 'authorized' : null } |
+  { 'chargeback' : null } |
+  { 'failed' : null };
+export type Time = bigint;
+export interface UserProfile {
+  'name' : string,
+  'email' : string,
+  'phone' : [] | [string],
+}
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
+export interface _SERVICE {
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'createOrder' : ActorMethod<[Order], Order>,
+  'getAllOrders' : ActorMethod<[], Array<Order>>,
+  'getCallerOrders' : ActorMethod<[], Array<Order>>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCustomerOrders' : ActorMethod<[string], Array<Order>>,
+  'getFilteredOrders' : ActorMethod<[[] | [OrderCriteria]], Array<Order>>,
+  'getRazorpayKeyId' : ActorMethod<[], string>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'markOrderAsPaid' : ActorMethod<[bigint], undefined>,
+  'quickSearchOrders' : ActorMethod<[string], Array<Order>>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+}
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
 export declare const idlFactory: IDL.InterfaceFactory;

@@ -1,74 +1,34 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "Build a brand website for Tinyroot with updated logo/branding, a bright color theme, product listings (Multani Mitti), and business contact details.",
+  "projectStateVersion": 3,
+  "summary": "New project",
   "architectural_notes": [
-    "Do not display a physical address in the contact details; only show email and phone/WhatsApp."
+    "Payment step should occur after order creation (post-order payment) rather than as a separate payment option."
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-replace-all-existing-tinyroot-logo-usages-with-the-newly-uploaded-logo-image-tiny-root-png-png-across-the-site-header-and-footer-and-ensure-the-logo-file-is-added-as-a-static-asset-in-the-frontend-so-it-loads-correctly-in-production",
-      "title": "Replace all existing Tinyroot logo usages with the newly uploaded logo image (Tiny_Root_PNG.png) across the site header and footer, and ensure the logo file is added as a static asset in the frontend so it loads correctly in production.",
+      "id": "feature-remove-the-standalone-product-payment-cta-from-the-products-section-so-users-are-not-prompted-to-pay-before-placing-an-order-keep-the-existing-order-now-behavior-that-scrolls-to-the-order-form",
+      "title": "Remove the standalone product payment CTA from the Products section so users are not prompted to pay before placing an order. Keep the existing “Order Now” behavior that scrolls to the order form.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-site-favicon-to-match-the-newly-uploaded-tinyroot-logo-by-changing-frontend-index-html-to-point-the-favicon-link-to-the-new-favicon-image-file-derived-from-the-uploaded-logo",
-      "title": "Update the site favicon to match the newly uploaded Tinyroot logo by changing frontend/index.html to point the favicon link to the new favicon image file derived from the uploaded logo.",
+      "id": "feature-after-a-customer-successfully-places-an-order-via-the-order-form-display-a-payment-option-to-pay-the-placed-order-s-total-charge-using-razorpay-the-payment-ui-must-clearly-reference-the-newly-created-order-e-g-show-the-order-id-and-amount-and-provide-success-cancel-error-feedback-states",
+      "title": "After a customer successfully places an order via the Order Form, display a payment option to pay the placed order’s total charge using Razorpay. The payment UI must clearly reference the newly created order (e.g., show the order ID and amount) and provide success/cancel/error feedback states.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-switch-the-site-to-a-bright-color-theme-by-updating-the-global-theme-tokens-css-variables-so-primary-secondary-accent-background-feel-noticeably-brighter-while-remaining-readable-and-consistent-across-all-sections",
-      "title": "Switch the site to a bright color theme by updating the global theme tokens (CSS variables) so primary/secondary/accent/background feel noticeably brighter while remaining readable and consistent across all sections.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-products-section-to-display-multani-mitti-variants-with-the-exact-weights-and-prices-provided-100gm-rs-139-and-200gm-rs-180",
-      "title": "Update the Products section to display Multani Mitti variants with the exact weights and prices provided: 100gm (Rs 139) and 200gm (Rs 180).",
+      "id": "feature-wire-the-post-order-payment-flow-end-to-end-on-razorpay-success-call-the-backend-to-mark-the-corresponding-order-as-paid-then-update-the-ui-state-to-reflect-payment-success-for-that-order",
+      "title": "Wire the post-order payment flow end-to-end: on Razorpay success, call the backend to mark the corresponding order as paid, then update the UI state to reflect payment success for that order.",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-all-displayed-company-contact-details-to-match-email-info-tinyroot-co-in-phone-whatsapp-9462112267-address-sodala-jaipur-rajasthan-302001-keep-user-facing-text-in-english",
-      "title": "Update all displayed company contact details to match: Email info@tinyroot.co.in, Phone/WhatsApp 9462112267, Address: Sodala Jaipur Rajasthan, 302001 (keep user-facing text in English).",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-ensure-all-required-generated-marketing-images-referenced-by-the-ui-exist-as-static-assets-under-frontend-public-assets-generated-and-are-used-by-the-hero-and-products-sections",
-      "title": "Add/ensure all required generated marketing images referenced by the UI exist as static assets under frontend/public/assets/generated and are used by the Hero and Products sections.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-the-uploaded-product-images-as-static-frontend-assets-and-use-them-as-the-product-images-in-the-products-section-set-the-100gm-product-image-to-the-uploaded-file-100gm-front-jpg-and-set-the-200gm-product-image-to-the-uploaded-file-200gm-front-jpg-replacing-the-current-placeholder-generated-image-paths",
-      "title": "Add the uploaded product images as static frontend assets and use them as the product images in the Products section: set the 100gm product image to the uploaded file “100gm Front.jpg” and set the 200gm product image to the uploaded file “200gm Front.jpg”, replacing the current placeholder/generated image paths.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-physical-address-from-all-displayed-company-contact-details-across-the-site-ui-e-g-remove-the-address-card-map-link-from-the-contact-section-and-remove-the-address-lines-from-the-footer-contact-area-while-keeping-the-email-and-phone-whatsapp-details",
-      "title": "Remove the physical address from all displayed company contact details across the site UI (e.g., remove the Address card/Map link from the Contact section and remove the address lines from the Footer contact area), while keeping the email and phone/WhatsApp details.",
-      "reqIds": [
-        "REQ-8"
       ],
       "version": 1
     }
@@ -76,43 +36,20 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Update site branding to Tinyroot and apply the attached brand logo across the site (header/footer/favicon as needed).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Switch the site theme to a bright color palette.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Add product listings for Multani Mitti with variants: 100gm (Rs 139) and 200gm (Rs 180).",
+      "summary": "Adjust order/payment flow so payment option is shown after placing an order (pay order charge), not as a separate standalone payment option",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-4",
-      "summary": "Add company contact details: email info@tinyroot.co.in, phone/WhatsApp 9462112267, address Sodala, Jaipur, Rajasthan 302001.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Use the confirmed product front photos for Multani Mitti: set “100gm Front.jpg” for the 100gm pack and “200gm Front.jpg” for the 200gm pack (replace placeholders/packshots as needed).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Remove the physical address from all displayed company contact details (keep email/phone/WhatsApp).",
-      "reqIds": [],
+      "summary": "Add backend APIs to associate a Razorpay payment success with an existing order and update the order’s paymentStatus accordingly, so the frontend can mark an order as paid after Razorpay checkout succeeds.",
+      "reqIds": [
+        "REQ-3"
+      ],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "Tinyroot",
+  "projectName": "Show payment option only after an order is placed (pay the order charge)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

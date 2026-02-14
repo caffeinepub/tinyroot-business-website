@@ -1,22 +1,20 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T13:26:06.619Z",
+  "generatedAt": "2026-02-14T07:46:09.396Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-7",
-        "summary": "Add the uploaded product images as static frontend assets and use them as the product images in the Products section: set the 100gm product image to the uploaded file “100gm Front.jpg” and set the 200gm product image to the uploaded file “200gm Front.jpg”, replacing the current placeholder/generated image paths.",
+        "id": "REQ-1",
+        "summary": "Remove the standalone product payment CTA from the Products section so users are not prompted to pay before placing an order. Keep the existing “Order Now” behavior that scrolls to the order form.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/100gm Front.jpg",
-          "frontend/public/assets/200gm Front.jpg",
           "frontend/src/components/Products.tsx"
         ],
         "matchedFiles": [
@@ -24,28 +22,58 @@
         ]
       },
       {
-        "id": "REQ-8",
-        "summary": "Remove the physical address from all displayed company contact details across the site UI (e.g., remove the Address card/Map link from the Contact section and remove the address lines from the Footer contact area), while keeping the email and phone/WhatsApp details.",
+        "id": "REQ-2",
+        "summary": "After a customer successfully places an order via the Order Form, display a payment option to pay the placed order’s total charge using Razorpay. The payment UI must clearly reference the newly created order (e.g., show the order ID and amount) and provide success/cancel/error feedback states.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/Contact.tsx",
-          "frontend/src/components/Footer.tsx"
+          "frontend/src/components/OrderForm.tsx",
+          "frontend/src/lib/razorpay.ts",
+          "frontend/src/hooks/useRazorpayKeyId.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/Contact.tsx",
-          "frontend/src/components/Footer.tsx"
+          "frontend/src/components/OrderForm.tsx",
+          "frontend/src/lib/razorpay.ts",
+          "frontend/src/hooks/useRazorpayKeyId.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add backend APIs to associate a Razorpay payment success with an existing order and update the order’s paymentStatus accordingly, so the frontend can mark an order as paid after Razorpay checkout succeeds.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Wire the post-order payment flow end-to-end: on Razorpay success, call the backend to mark the corresponding order as paid, then update the UI state to reflect payment success for that order.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useMarkOrderAsPaid.ts",
+          "frontend/src/components/OrderForm.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useMarkOrderAsPaid.ts",
+          "frontend/src/components/OrderForm.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/Contact.tsx",
-    "frontend/src/components/Footer.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/OrderForm.tsx",
     "frontend/src/components/Products.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useMarkOrderAsPaid.ts",
+    "frontend/src/hooks/useRazorpayKeyId.ts",
+    "frontend/src/lib/razorpay.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

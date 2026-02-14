@@ -1,69 +1,96 @@
 {
   "kind": "build_request",
-  "title": "Use uploaded Multani Mitti pack photos and remove physical address from site contact info",
+  "title": "Show payment option only after an order is placed (pay the order charge)",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-7",
-      "text": "Add the uploaded product images as static frontend assets and use them as the product images in the Products section: set the 100gm product image to the uploaded file “100gm Front.jpg” and set the 200gm product image to the uploaded file “200gm Front.jpg”, replacing the current placeholder/generated image paths.",
+      "id": "REQ-1",
+      "text": "Remove the standalone product payment CTA from the Products section so users are not prompted to pay before placing an order. Keep the existing “Order Now” behavior that scrolls to the order form.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-latest"
+          "msg-6"
         ],
         "quotes": [
-          "• “Yes, use these for 100gm and 200gm”"
+          "Don't put the payment option separate, after placing order then for give payment option to pay order charge."
         ]
       },
       "acceptanceCriteria": [
-        "The repository contains the uploaded images available as static assets under the frontend public directory (served directly by the frontend)",
-        "The 100gm product card in the Products section renders the uploaded “100gm Front.jpg” image (not the current /assets/generated/multani-mitti-100gm.dim_400x400.jpg)",
-        "The 200gm product card in the Products section renders the uploaded “200gm Front.jpg” image (not the current /assets/generated/multani-mitti-200gm.dim_400x400.jpg)",
-        "Image URLs work in production builds (if filenames with spaces are used, the code uses correctly URL-encoded paths such as %20)"
+        "On the customer landing page, product cards no longer show a “Pay with Razorpay” / “Try Again” / “Pay Again” payment flow.",
+        "The “Order Now” button still scrolls the user to the order form section.",
+        "No Razorpay checkout can be initiated directly from the Products section."
       ]
     },
     {
-      "id": "REQ-8",
-      "text": "Remove the physical address from all displayed company contact details across the site UI (e.g., remove the Address card/Map link from the Contact section and remove the address lines from the Footer contact area), while keeping the email and phone/WhatsApp details.",
+      "id": "REQ-2",
+      "text": "After a customer successfully places an order via the Order Form, display a payment option to pay the placed order’s total charge using Razorpay. The payment UI must clearly reference the newly created order (e.g., show the order ID and amount) and provide success/cancel/error feedback states.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-latest"
+          "msg-6"
         ],
         "quotes": [
-          "and remove Address."
+          "Don't put the payment option separate, after placing order then for give payment option to pay order charge."
         ]
       },
       "acceptanceCriteria": [
-        "The Contact section no longer displays an “Address” card and no longer includes any map link",
-        "The Footer no longer displays the physical address lines (e.g., “Sodala Jaipur / Rajasthan, 302001”)",
-        "Email remains displayed as info@tinyroot.co.in and phone/WhatsApp remains displayed as 9462112267 (as currently formatted in the UI)",
-        "No other visible UI text contains the removed physical address"
+        "Submitting the order form calls the existing backend createOrder API and the UI captures the returned Order (including orderId and totalAmount).",
+        "After order creation succeeds, the UI shows a “Pay now” action for that order, using the exact order total amount.",
+        "Payment status messages are shown for: processing, success, cancelled/dismissed, and error (all user-facing text in English).",
+        "If the Razorpay key is unavailable, the pay button is disabled and an English error/help message is shown."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add backend APIs to associate a Razorpay payment success with an existing order and update the order’s paymentStatus accordingly, so the frontend can mark an order as paid after Razorpay checkout succeeds.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "after placing order then for give payment option to pay order charge."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes a shared method that accepts (orderId, razorpayPaymentId) and updates the stored order.paymentStatus to #paid for that order.",
+        "The method enforces that only the order’s customerPrincipal or an admin can mark the order as paid.",
+        "If orderId does not exist, the method traps with a clear error message.",
+        "No changes break existing order creation and admin order listing behavior."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Wire the post-order payment flow end-to-end: on Razorpay success, call the backend to mark the corresponding order as paid, then update the UI state to reflect payment success for that order.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "after placing order then for give payment option to pay order charge."
+        ]
+      },
+      "acceptanceCriteria": [
+        "On Razorpay successful payment callback, the frontend calls the new backend method with the created orderId and received razorpay_payment_id.",
+        "After the backend call succeeds, the UI reflects that the order payment is paid (and no longer shows a pending pay action for that same order in the post-order panel).",
+        "If the backend call fails after a Razorpay success, the UI shows an English error message instructing the user to contact support/admin with the order ID and payment ID."
       ]
     }
   ],
   "constraints": [
-    "Frontend user-facing text must remain in English.",
-    "Do not edit any files under frontend/src/components/ui or any paths listed in frontend.immutablePaths.",
-    "Backend must remain single-actor in Motoko; do not add additional backend services."
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit files under frontend/src/components/ui (compose them instead).",
+    "Do not edit immutable frontend hook files listed in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useActor.ts, frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/main.tsx).",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Adding a product gallery/carousel for front/back pack photos.",
-    "Changing product prices/weights (they are already set to 100gm ₹139 and 200gm ₹180).",
-    "Implementing checkout, payment processing, or order management."
+    "Implementing Razorpay server-side order creation/signature verification (keep the current client-side checkout approach).",
+    "Adding new third-party authentication providers beyond Internet Identity.",
+    "Building a separate standalone payment page/section outside the post-order flow."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

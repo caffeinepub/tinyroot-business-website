@@ -1,34 +1,48 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-13T13:26:06.616Z",
-  "summary": "REQ-8 appears implemented by removing the physical address from the Contact and Footer UI. REQ-7 updates product image paths to the uploaded filenames (URL-encoded), but the diff provides no evidence that the actual image files were added under the frontend public assets directory.",
+  "generatedAt": "2026-02-14T07:46:09.393Z",
+  "summary": "REQ-1 and most of the post-order payment UI (REQ-2) appear implemented on the frontend (Products payment CTA removed; OrderForm now includes post-order payment panel and Razorpay checkout helper). However, the backend API and end-to-end wiring required to record Razorpay payment success against an order (REQ-3/REQ-4) is not evidenced in the diff, and the new hook explicitly drops the required razorpayPaymentId parameter when calling the backend.",
   "missing_requirements": [
     {
-      "id": "REQ-7",
-      "requirement": "Add the uploaded product images as static frontend assets under the frontend public directory so they are served directly by the frontend.",
-      "reason": "The diff shows Products.tsx now references /assets/100gm%20Front.jpg and /assets/200gm%20Front.jpg, but no files were added in the diff (Added: 0), so there is no evidence the images themselves were committed under frontend/public/assets.",
+      "id": "REQ-3",
+      "requirement": "Backend exposes a shared method that accepts (orderId, razorpayPaymentId) and updates the stored order.paymentStatus to #paid for that order, enforcing only the order’s customerPrincipal or an admin can mark as paid, and trapping with a clear error if orderId does not exist.",
+      "reason": "The diff does not show any backend shared method that accepts both orderId and razorpayPaymentId, nor evidence of authorization enforcement or trapping behavior. Additionally, the frontend hook calls actor.markOrderAsPaid(orderId) without passing razorpayPaymentId, suggesting the backend API signature is not as required.",
       "evidence": [
-        "File diff summary header: \"Added: 0\"",
-        "frontend/src/components/Products.tsx"
+        "backend/main.mo (truncated; no markOrderAsPaid API shown)",
+        "frontend/src/hooks/useMarkOrderAsPaid.ts (mutationFn ignores razorpayPaymentId and calls actor.markOrderAsPaid(orderId))"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "On Razorpay successful payment callback, call the new backend method with created orderId and received razorpay_payment_id; after backend success reflect paid state; if backend fails after Razorpay success show an English error instructing user to contact support/admin with order ID and payment ID.",
+      "reason": "The diff evidence shows the hook used for the backend call does not accept/pass razorpayPaymentId to the actor call, so the required end-to-end wiring (including sending razorpay_payment_id) is not implemented as specified. The backend-failure-after-Razorpay-success support/admin message cannot be confirmed from the provided truncated OrderForm content.",
+      "evidence": [
+        "frontend/src/hooks/useMarkOrderAsPaid.ts",
+        "frontend/src/components/OrderForm.tsx (truncated; uses useMarkOrderAsPaid and openRazorpayCheckout, but backend call parameterization is not shown and hook cannot send paymentId)"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Added a \"Business Hours\" card/section to the Contact page.",
-      "reason": "The BuildRequest only asked to remove the physical address while keeping email/phone/WhatsApp; it did not request adding business hours content.",
+      "description": "Introduced a backend migration module and wired it into the actor via `(with migration = Migration.run)` without any requirement for migrations in the BuildRequest.",
+      "reason": "BuildRequest does not mention adding a migration system/module; this is extra functionality beyond the requested payment-flow changes.",
       "evidence": [
-        "frontend/src/components/Contact.tsx"
+        "backend/migration.mo",
+        "backend/main.mo (imports Migration \"migration\" and uses `(with migration = Migration.run)` )"
       ]
     }
   ],
-  "confidence": 0.74,
+  "confidence": 0.66,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/Contact.tsx",
-    "frontend/src/components/Footer.tsx",
+    "frontend/src/components/OrderForm.tsx",
     "frontend/src/components/Products.tsx",
+    "frontend/src/hooks/useMarkOrderAsPaid.ts",
+    "frontend/src/hooks/useRazorpayKeyId.ts",
+    "frontend/src/lib/razorpay.ts",
     "project_state.json"
   ]
 }

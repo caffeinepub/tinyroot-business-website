@@ -1,54 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Wire uploaded Multani Mitti product images and remove physical address from contact UI",
+  "title": "Post-order Razorpay payment flow (remove product-level CTA)",
   "requirements": [
     {
-      "id": "REQ-7",
-      "summary": "Add uploaded 100gm/200gm pack photos as static assets and use them for the two product cards instead of generated placeholders.",
+      "id": "REQ-1",
+      "summary": "Remove standalone Razorpay payment CTA from product cards while keeping “Order Now” scroll-to-order behavior.",
       "acceptanceCriteria": [
-        "The repository contains the uploaded images available as static assets under the frontend public directory (served directly by the frontend)",
-        "The 100gm product card in the Products section renders the uploaded “100gm Front.jpg” image (not the current /assets/generated/multani-mitti-100gm.dim_400x400.jpg)",
-        "The 200gm product card in the Products section renders the uploaded “200gm Front.jpg” image (not the current /assets/generated/multani-mitti-200gm.dim_400x400.jpg)",
-        "Image URLs work in production builds (if filenames with spaces are used, the code uses correctly URL-encoded paths such as %20)"
+        "On the customer landing page, product cards no longer show a “Pay with Razorpay” / “Try Again” / “Pay Again” payment flow.",
+        "The “Order Now” button still scrolls the user to the order form section.",
+        "No Razorpay checkout can be initiated directly from the Products section."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/100gm Front.jpg",
-          "operation": "create",
-          "description": "Add the uploaded 100gm pack front image as a static public asset served by the frontend."
-        },
-        {
-          "path": "frontend/public/assets/200gm Front.jpg",
-          "operation": "create",
-          "description": "Add the uploaded 200gm pack front image as a static public asset served by the frontend."
-        },
-        {
           "path": "frontend/src/components/Products.tsx",
           "operation": "modify",
-          "description": "Replace the two product image paths to reference the new static assets (use URL-encoded paths for spaces, e.g., /assets/100gm%20Front.jpg and /assets/200gm%20Front.jpg), ensuring the old generated placeholder paths are no longer used."
+          "description": "Remove the product-level Razorpay payment flow: delete Razorpay key fetching (useRazorpayKeyId), payment state/status alerts, and all Pay/Try Again/Pay Again buttons; keep the existing “Order Now” button and scroll handler intact. Ensure there is no code path that can call openRazorpayCheckout from the Products section. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-8",
-      "summary": "Remove physical address and map link from Contact section and Footer while keeping email and phone/WhatsApp.",
+      "id": "REQ-2",
+      "summary": "After an order is created from the Order Form, show a post-order Razorpay payment panel for that specific order with clear order reference and feedback states.",
       "acceptanceCriteria": [
-        "The Contact section no longer displays an “Address” card and no longer includes any map link",
-        "The Footer no longer displays the physical address lines (e.g., “Sodala Jaipur / Rajasthan, 302001”)",
-        "Email remains displayed as info@tinyroot.co.in and phone/WhatsApp remains displayed as 9462112267 (as currently formatted in the UI)",
-        "No other visible UI text contains the removed physical address"
+        "Submitting the order form calls the existing backend createOrder API and the UI captures the returned Order (including orderId and totalAmount).",
+        "After order creation succeeds, the UI shows a “Pay now” action for that order, using the exact order total amount.",
+        "Payment status messages are shown for: processing, success, cancelled/dismissed, and error (all user-facing text in English).",
+        "If the Razorpay key is unavailable, the pay button is disabled and an English error/help message is shown."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Contact.tsx",
+          "path": "frontend/src/components/OrderForm.tsx",
           "operation": "modify",
-          "description": "Remove the Address contact card (and any map link behavior) from the Contact section while keeping Email, Phone, and WhatsApp cards; also remove any unused address-related imports/logic after the change."
+          "description": "Update the order submission flow to capture and store the returned Order from createOrder (including orderId and totalAmount). After a successful submission, render an in-place post-order payment panel directly within the OrderForm section (not a separate page): show the created order ID and amount, and a “Pay now” button. Use existing shadcn/ui components already imported/available (e.g., Card, Alert, Button, Badge) by composing them (do not edit frontend/src/components/ui). Add user-facing English feedback states: processing, success, cancelled/dismissed, and error; ensure “Pay now” is disabled with an English help message when the Razorpay key is missing/unavailable. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/components/Footer.tsx",
+          "path": "frontend/src/lib/razorpay.ts",
           "operation": "modify",
-          "description": "Remove the physical address lines from the footer contact area while keeping the email and phone items unchanged."
+          "description": "Extend the Razorpay checkout helper to support the post-order payment UX requirements: allow passing through order-identifying metadata (e.g., orderId and amount display name/notes) and reliably surface modal dismiss (cancelled) vs handler success vs load/init errors so the OrderForm panel can show the required English processing/success/cancel/error states. Keep the approach client-side as currently implemented. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useRazorpayKeyId.ts",
+          "operation": "modify",
+          "description": "Adjust the Razorpay key hook behavior to be compatible with disabling the pay button when the key is unavailable: ensure failures can be interpreted by the UI (e.g., by surfacing error state from React Query) without logging/exposing the key. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "On Razorpay success, call backend to mark the created order as paid and update the post-order UI to reflect paid state, with a support instruction on failure.",
+      "acceptanceCriteria": [
+        "On Razorpay successful payment callback, the frontend calls the new backend method with the created orderId and received razorpay_payment_id.",
+        "After the backend call succeeds, the UI reflects that the order payment is paid (and no longer shows a pending pay action for that same order in the post-order panel).",
+        "If the backend call fails after a Razorpay success, the UI shows an English error message instructing the user to contact support/admin with the order ID and payment ID."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useMarkOrderAsPaid.ts",
+          "operation": "create",
+          "description": "Create a React Query mutation hook that invokes the backend capability to mark an order as paid after a Razorpay success. The hook should accept (orderId, razorpayPaymentId) and call the actor method in a way that remains compatible even if the generated frontend typings lag behind (e.g., by using a safe runtime call pattern). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/OrderForm.tsx",
+          "operation": "modify",
+          "description": "Wire the post-order payment panel to call the new useMarkOrderAsPaid hook on Razorpay success with the created orderId and the returned razorpay_payment_id. After a successful backend call, update local UI state to show paid/success and remove/disable the pending pay action for that order. If the backend call fails after Razorpay success, show an English error message instructing the user to contact support/admin and include both the order ID and payment ID in the message. Verify the component's usage instructions before implementing."
         }
       ]
     }

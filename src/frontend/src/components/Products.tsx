@@ -27,8 +27,8 @@ const products = [
 ];
 
 export function Products() {
-  const handleContactForOrder = () => {
-    const element = document.getElementById('contact');
+  const handleOrderNow = () => {
+    const element = document.getElementById('order');
     if (element) {
       const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
@@ -107,7 +107,7 @@ export function Products() {
               </CardContent>
               <CardFooter className="p-6 pt-0">
                 <Button
-                  onClick={handleContactForOrder}
+                  onClick={handleOrderNow}
                   className="w-full rounded-full"
                   size="lg"
                 >

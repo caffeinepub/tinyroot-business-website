@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-the-uploaded-product-images-as-static-frontend-assets-and-use-them-as-the-product-images-in-the-products-section-set-the-100gm-product-image-to-the-uploaded-file-100gm-front-jpg-and-set-the-200gm-product-image-to-the-uploaded-file-200gm-front-jpg-replacing-the-current-placeholder-generated-image-paths",
-      "featureTitle": "Add the uploaded product images as static frontend assets and use them as the product images in the Products section: set the 100gm product image to the uploaded file “100gm Front.jpg” and set the 200gm product image to the uploaded file “200gm Front.jpg”, replacing the current placeholder/generated image paths.",
+      "featureId": "feature-remove-the-standalone-product-payment-cta-from-the-products-section-so-users-are-not-prompted-to-pay-before-placing-an-order-keep-the-existing-order-now-behavior-that-scrolls-to-the-order-form",
+      "featureTitle": "Remove the standalone product payment CTA from the Products section so users are not prompted to pay before placing an order. Keep the existing “Order Now” behavior that scrolls to the order form.",
       "files": [
         "frontend/src/components/Products.tsx"
       ],
@@ -12,29 +12,52 @@
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-7"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-remove-the-physical-address-from-all-displayed-company-contact-details-across-the-site-ui-e-g-remove-the-address-card-map-link-from-the-contact-section-and-remove-the-address-lines-from-the-footer-contact-area-while-keeping-the-email-and-phone-whatsapp-details",
-      "featureTitle": "Remove the physical address from all displayed company contact details across the site UI (e.g., remove the Address card/Map link from the Contact section and remove the address lines from the Footer contact area), while keeping the email and phone/WhatsApp details.",
+      "featureId": "feature-after-a-customer-successfully-places-an-order-via-the-order-form-display-a-payment-option-to-pay-the-placed-order-s-total-charge-using-razorpay-the-payment-ui-must-clearly-reference-the-newly-created-order-e-g-show-the-order-id-and-amount-and-provide-success-cancel-error-feedback-states",
+      "featureTitle": "After a customer successfully places an order via the Order Form, display a payment option to pay the placed order’s total charge using Razorpay. The payment UI must clearly reference the newly created order (e.g., show the order ID and amount) and provide success/cancel/error feedback states.",
       "files": [
-        "frontend/src/components/Contact.tsx",
-        "frontend/src/components/Footer.tsx"
+        "frontend/src/components/OrderForm.tsx",
+        "frontend/src/hooks/useRazorpayKeyId.ts",
+        "frontend/src/lib/razorpay.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-8"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-wire-the-post-order-payment-flow-end-to-end-on-razorpay-success-call-the-backend-to-mark-the-corresponding-order-as-paid-then-update-the-ui-state-to-reflect-payment-success-for-that-order",
+      "featureTitle": "Wire the post-order payment flow end-to-end: on Razorpay success, call the backend to mark the corresponding order as paid, then update the UI state to reflect payment success for that order.",
+      "files": [
+        "frontend/src/components/OrderForm.tsx",
+        "frontend/src/hooks/useMarkOrderAsPaid.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

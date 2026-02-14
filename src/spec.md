@@ -1,10 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Update the Products section to use the uploaded Multani Mitti pack photos for 100gm and 200gm products, and remove the physical address from all contact details shown on the site.
+**Goal:** Only show Razorpay payment options after an order is successfully placed, and tie the payment to that specific order.
 
 **Planned changes:**
-- Add the uploaded “100gm Front.jpg” and “200gm Front.jpg” files as static assets under the frontend public directory and update the Products section to use these images for the 100gm and 200gm product cards (replacing the current generated placeholder image paths).
-- Remove the physical address from the Contact section UI (including removing the Address card and any map link) and from the Footer contact area, while keeping the email and phone/WhatsApp details unchanged.
+- Remove the standalone Razorpay payment CTA/flow from product cards in the Products section, while keeping the existing “Order Now” scroll-to-order-form behavior.
+- After successful order creation from the Order Form, show a post-order “Pay now” option that references the created order (order ID and total amount) and provides processing/success/cancel/error feedback in English.
+- Add a backend method/API to mark an existing order as paid using (orderId, razorpayPaymentId), enforcing that only the order’s customer principal or an admin can perform the update.
+- Wire the end-to-end post-order payment flow: on Razorpay success, call the backend to update the order’s paymentStatus to paid, then update the frontend state; if the backend update fails, show an English support message including order ID and payment ID.
 
-**User-visible outcome:** The Products section shows the real pack photos for the 100gm and 200gm items, and the site no longer displays any physical address anywhere—only email and phone/WhatsApp remain in contact information.
+**User-visible outcome:** Customers place an order first, then are offered a “Pay now” option for that specific order amount; successful payment marks the order as paid and updates the UI, with clear English status messages.
