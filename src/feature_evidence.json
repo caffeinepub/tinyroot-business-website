@@ -1,0 +1,42 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-the-uploaded-product-images-as-static-frontend-assets-and-use-them-as-the-product-images-in-the-products-section-set-the-100gm-product-image-to-the-uploaded-file-100gm-front-jpg-and-set-the-200gm-product-image-to-the-uploaded-file-200gm-front-jpg-replacing-the-current-placeholder-generated-image-paths",
+      "featureTitle": "Add the uploaded product images as static frontend assets and use them as the product images in the Products section: set the 100gm product image to the uploaded file “100gm Front.jpg” and set the 200gm product image to the uploaded file “200gm Front.jpg”, replacing the current placeholder/generated image paths.",
+      "files": [
+        "frontend/src/components/Products.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-the-physical-address-from-all-displayed-company-contact-details-across-the-site-ui-e-g-remove-the-address-card-map-link-from-the-contact-section-and-remove-the-address-lines-from-the-footer-contact-area-while-keeping-the-email-and-phone-whatsapp-details",
+      "featureTitle": "Remove the physical address from all displayed company contact details across the site UI (e.g., remove the Address card/Map link from the Contact section and remove the address lines from the Footer contact area), while keeping the email and phone/WhatsApp details.",
+      "files": [
+        "frontend/src/components/Contact.tsx",
+        "frontend/src/components/Footer.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "frontend/src/App.tsx": "Main application component that renders the complete Tinyroot website layout with Header, Hero, Products, Contact, and Footer sections.",
+  "frontend/src/components/Header.tsx": "Fixed navigation header with the new Tiny_Root_PNG.png logo, desktop/mobile menu, smooth scroll navigation, and scroll-based styling effects.",
+  "frontend/src/components/Hero.tsx": "Hero section with background image, brand introduction, call-to-action button, and three feature highlights showcasing natural skincare benefits.",
+  "frontend/src/components/Products.tsx": "Product showcase section displaying two Multani Mitti products (100gm at ₹139 and 200gm at ₹180) with uploaded product images (100gm Front.jpg and 200gm Front.jpg), descriptions, benefits badges, pricing display, and \"Order Now\" buttons that scroll to contact section.",
+  "frontend/src/components/Contact.tsx": "Contact information section with email (info@tinyroot.co.in), phone (+91 94621 12267), and WhatsApp (+91 94621 12267) in interactive cards, plus business hours display; address card and map link removed.",
+  "frontend/src/components/Footer.tsx": "Footer component with the Tiny_Root_PNG.png logo, contact details (info@tinyroot.co.in and +91 94621 12267 only, physical address removed), quick navigation links, social media icons, and attribution to caffeine.ai with UTM tracking.",
+  "frontend/src/hooks/useQueries.ts": "Empty placeholder file as the website is static with no backend data fetching requirements.",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring a bright, warm palette with golden orange primary (0.65 0.15 50) and soft peach secondary tones for both light and dark modes, optimized for a vibrant skincare brand aesthetic.",
+  "frontend/index.html": "HTML entry point with updated favicon references to the generated tinyroot-favicon.dim_64x64.png and apple-touch-icon files, replacing the old Tinyroot White.png favicon."
+}

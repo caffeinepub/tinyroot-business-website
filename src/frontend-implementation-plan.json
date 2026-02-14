@@ -1,0 +1,56 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Wire uploaded Multani Mitti product images and remove physical address from contact UI",
+  "requirements": [
+    {
+      "id": "REQ-7",
+      "summary": "Add uploaded 100gm/200gm pack photos as static assets and use them for the two product cards instead of generated placeholders.",
+      "acceptanceCriteria": [
+        "The repository contains the uploaded images available as static assets under the frontend public directory (served directly by the frontend)",
+        "The 100gm product card in the Products section renders the uploaded “100gm Front.jpg” image (not the current /assets/generated/multani-mitti-100gm.dim_400x400.jpg)",
+        "The 200gm product card in the Products section renders the uploaded “200gm Front.jpg” image (not the current /assets/generated/multani-mitti-200gm.dim_400x400.jpg)",
+        "Image URLs work in production builds (if filenames with spaces are used, the code uses correctly URL-encoded paths such as %20)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/100gm Front.jpg",
+          "operation": "create",
+          "description": "Add the uploaded 100gm pack front image as a static public asset served by the frontend."
+        },
+        {
+          "path": "frontend/public/assets/200gm Front.jpg",
+          "operation": "create",
+          "description": "Add the uploaded 200gm pack front image as a static public asset served by the frontend."
+        },
+        {
+          "path": "frontend/src/components/Products.tsx",
+          "operation": "modify",
+          "description": "Replace the two product image paths to reference the new static assets (use URL-encoded paths for spaces, e.g., /assets/100gm%20Front.jpg and /assets/200gm%20Front.jpg), ensuring the old generated placeholder paths are no longer used."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Remove physical address and map link from Contact section and Footer while keeping email and phone/WhatsApp.",
+      "acceptanceCriteria": [
+        "The Contact section no longer displays an “Address” card and no longer includes any map link",
+        "The Footer no longer displays the physical address lines (e.g., “Sodala Jaipur / Rajasthan, 302001”)",
+        "Email remains displayed as info@tinyroot.co.in and phone/WhatsApp remains displayed as 9462112267 (as currently formatted in the UI)",
+        "No other visible UI text contains the removed physical address"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Contact.tsx",
+          "operation": "modify",
+          "description": "Remove the Address contact card (and any map link behavior) from the Contact section while keeping Email, Phone, and WhatsApp cards; also remove any unused address-related imports/logic after the change."
+        },
+        {
+          "path": "frontend/src/components/Footer.tsx",
+          "operation": "modify",
+          "description": "Remove the physical address lines from the footer contact area while keeping the email and phone items unchanged."
+        }
+      ]
+    }
+  ]
+}
